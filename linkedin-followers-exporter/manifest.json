@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Followers Exporter for LinkedIn Pages",
+  "version": "1.0.0",
+  "description": "Export the latest followers of a LinkedIn Page you manage, to your own webhook (n8n, Make, Zapier, Clay) or to a CSV file.",
+  "permissions": ["storage"],
+  "optional_host_permissions": ["https://*/*", "http://localhost/*", "http://127.0.0.1/*"],
+  "background": { "service_worker": "background.js" },
+  "action": { "default_title": "Followers Exporter: settings" },
+  "options_ui": { "page": "options.html", "open_in_tab": true },
+  "content_scripts": [
+    {
+      "matches": ["https://www.linkedin.com/company/*/admin/analytics/followers*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
+}

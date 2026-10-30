@@ -1,0 +1,220 @@
+/* Neutral look on LinkedIn's light admin page.
+     ink      #111827   button surface, text
+     surface  #F3F4F6   picker and settings button
+     line     #9CA3AF   hairlines
+     muted    #4B5563   secondary text
+     accent   #4F46E5   focus, progress, success
+     error    #B42318   failed run */
+
+.lfe-wrap {
+  --lfe-ink: #111827;
+  --lfe-surface: #F3F4F6;
+  --lfe-line: #9CA3AF;
+  --lfe-muted: #4B5563;
+  --lfe-accent: #4F46E5;
+  --lfe-error: #B42318;
+  --lfe-shadow: 0 1px 2px rgba(17, 24, 39, .06), 0 4px 12px rgba(17, 24, 39, .08);
+  --lfe-ring: 0 0 0 3px rgba(79, 70, 229, .28);
+
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  /* When the title is a flex row, take only the space the title leaves,
+     never less than the controls, so "All followers" is not squeezed. */
+  flex: 1 1 0%;
+  min-width: min-content;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* LinkedIn's own rules for label, button, select, span and svg (margins,
+   paddings, offsets, box sizing) reach into the heading we mount in and
+   push the controls out of line. Every layout property that decides
+   alignment is pinned here, so page CSS cannot move it. */
+.lfe-wrap,
+.lfe-wrap *,
+.lfe-wrap *::before,
+.lfe-wrap *::after {
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  float: none !important;
+  transform: none !important;
+  vertical-align: middle !important;
+}
+/* the one margin we do want: space after the "All followers" title */
+.lfe-wrap.lfe-wrap { margin: 0 0 0 16px !important; }
+.lfe-wrap .lfe-controls,
+.lfe-wrap .lfe-picker,
+.lfe-wrap .lfe-btn,
+.lfe-wrap .lfe-gear {
+  position: relative !important;
+  top: auto !important;
+  bottom: auto !important;
+  align-self: center !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  line-height: 1 !important;
+}
+.lfe-wrap .lfe-picker,
+.lfe-wrap .lfe-btn,
+.lfe-wrap .lfe-gear {
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 36px !important;
+}
+
+.lfe-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+}
+
+/* ---------- count picker -------------------------------------- */
+/* The native <select> covers the whole pill, transparent, so the full
+   surface opens it and keyboard and screen readers get a real control. */
+.lfe-picker {
+  gap: 8px;
+  padding: 0 32px 0 16px;
+  background: var(--lfe-surface);
+  color: var(--lfe-ink);
+  border: 1px solid var(--lfe-line);
+  border-radius: 8px;
+  box-shadow: var(--lfe-shadow);
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease, opacity .15s ease;
+}
+.lfe-picker:hover { border-color: var(--lfe-accent); }
+.lfe-picker:focus-within {
+  border-color: var(--lfe-accent);
+  box-shadow: var(--lfe-shadow), var(--lfe-ring);
+}
+.lfe-picker-prefix { color: var(--lfe-muted); }
+
+/* wide enough for "5,000", so the pill keeps one width whatever is picked */
+.lfe-picker-value {
+  min-width: 2.9em;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.lfe-wrap .lfe-select {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  border: 0 !important;
+  opacity: 0 !important;
+  cursor: pointer;
+  font: inherit;
+}
+
+.lfe-wrap .lfe-chevron {
+  position: absolute !important;
+  right: 12px;
+  top: calc(50% - 6px) !important;
+  display: block;
+  width: 12px;
+  height: 12px;
+  color: var(--lfe-muted);
+  pointer-events: none;
+}
+.lfe-chevron svg { display: block; width: 12px; height: 12px; }
+
+.lfe-picker.lfe-disabled { opacity: .55; cursor: default; }
+.lfe-picker.lfe-disabled .lfe-select { cursor: default; }
+
+/* ---------- main button --------------------------------------- */
+.lfe-btn {
+  overflow: hidden;
+  justify-content: center;
+  gap: 8px;
+  /* fits the longest label, "Loading 5,000 / 5,000", so nothing jumps */
+  min-width: 208px;
+  padding: 0 16px;
+  font: inherit;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: #FFFFFF;
+  background: var(--lfe-ink);
+  border: 1px solid var(--lfe-ink);
+  border-radius: 8px;
+  box-shadow: var(--lfe-shadow);
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.lfe-btn:hover:not(:disabled) {
+  border-color: var(--lfe-accent);
+  box-shadow: var(--lfe-shadow), var(--lfe-ring);
+}
+.lfe-btn:focus-visible {
+  outline: none;
+  border-color: var(--lfe-accent);
+  box-shadow: var(--lfe-shadow), var(--lfe-ring);
+}
+.lfe-btn:disabled { cursor: progress; }
+
+.lfe-icon { display: inline-flex; flex: none; }
+.lfe-icon svg { display: block; width: 16px; height: 16px; }
+
+/* progress runs along the bottom edge while loading and sending */
+.lfe-btn::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: calc(var(--lfe-progress, 0) * 100%);
+  background: var(--lfe-accent);
+  transition: width .3s ease;
+}
+.lfe-btn:not([data-state="busy"])::after { width: 0; transition: none; }
+
+.lfe-btn[data-state="done"] {
+  background: var(--lfe-accent);
+  border-color: var(--lfe-accent);
+}
+.lfe-btn[data-state="error"] {
+  background: var(--lfe-error);
+  border-color: var(--lfe-error);
+}
+
+/* ---------- settings button ----------------------------------- */
+.lfe-gear {
+  justify-content: center;
+  width: 36px;
+  padding: 0;
+  color: var(--lfe-muted);
+  background: var(--lfe-surface);
+  border: 1px solid var(--lfe-line);
+  border-radius: 8px;
+  box-shadow: var(--lfe-shadow);
+  cursor: pointer;
+  transition: border-color .15s ease, box-shadow .15s ease, color .15s ease;
+}
+.lfe-gear:hover { color: var(--lfe-ink); border-color: var(--lfe-accent); }
+.lfe-gear:focus-visible {
+  outline: none;
+  border-color: var(--lfe-accent);
+  box-shadow: var(--lfe-shadow), var(--lfe-ring);
+}
+.lfe-gear svg { display: block; width: 16px; height: 16px; }
+
+/* ---------- result line --------------------------------------- */
+.lfe-note {
+  max-width: 380px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--lfe-muted);
+  white-space: normal;
+}
+.lfe-note:empty { display: none; }
+.lfe-note strong { color: var(--lfe-ink); font-weight: 600; }

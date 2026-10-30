@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Followers Exporter settings</title>
+  <style>
+    :root {
+      --ink: #111827; --muted: #4B5563; --line: #D1D5DB; --surface: #F3F4F6;
+      --accent: #4F46E5; --on-accent: #FFFFFF; --ok: #047857; --error: #B42318; --bg: #FFFFFF;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #F3F4F6; --muted: #9CA3AF; --line: #374151; --surface: #1F2937;
+        --accent: #818CF8; --on-accent: #111827; --ok: #34D399; --error: #F87171; --bg: #111827;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+    main { max-width: 680px; margin: 0 auto; padding: 40px 16px 64px; }
+    h1 { font-size: 24px; line-height: 1.25; margin: 0 0 8px; }
+    h2 { font-size: 16px; margin: 32px 0 8px; }
+    p { margin: 0 0 12px; color: var(--muted); }
+    .card { border: 1px solid var(--line); border-radius: 12px; padding: 24px; margin-top: 24px; }
+    label { display: block; font-weight: 600; margin-bottom: 8px; }
+    input[type=url] {
+      width: 100%; height: 40px; padding: 0 12px; font: inherit; color: var(--ink);
+      background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+    }
+    input[type=url]:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79, 70, 229, .25); }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    button {
+      height: 36px; padding: 0 16px; font: inherit; font-weight: 600; border-radius: 8px; cursor: pointer;
+      border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    }
+    button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+    button:disabled { opacity: .5; cursor: default; }
+    button:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(79, 70, 229, .35); }
+    #mode { margin-top: 16px; color: var(--ink); font-weight: 500; }
+    #status { min-height: 1.5em; margin-top: 12px; font-size: 14px; }
+    #status[data-kind=ok] { color: var(--ok); }
+    #status[data-kind=error] { color: var(--error); }
+    pre {
+      margin: 0; padding: 16px; overflow-x: auto; font-size: 13px; line-height: 1.45;
+      background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
+    }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    ol { margin: 0; padding-left: 20px; color: var(--muted); }
+    li { margin-bottom: 4px; }
+    .small { font-size: 13px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Followers Exporter for LinkedIn Pages</h1>
+  <p>Exports the latest followers of a LinkedIn Page you manage. Without a webhook, the button on LinkedIn downloads a CSV. With one, it sends the followers to your webhook in a single request.</p>
+
+  <section class="card">
+    <label for="url">Webhook URL</label>
+    <input id="url" type="url" placeholder="https://your-n8n.example.com/webhook/linkedin-followers" autocomplete="off" spellcheck="false">
+    <p class="small" style="margin-top:8px">Any endpoint that accepts a JSON POST works: an n8n Webhook node, a Make or Zapier webhook, a Clay webhook source... When you save, Chrome asks you to allow the extension to reach this one address. Leave empty to download CSV files.</p>
+    <div class="row">
+      <button id="save" class="primary" type="button">Save</button>
+      <button id="test" type="button">Send a test row</button>
+      <button id="remove" type="button">Remove webhook</button>
+    </div>
+    <div id="mode"></div>
+    <div id="status" role="status" aria-live="polite"></div>
+  </section>
+
+  <h2>How to use it</h2>
+  <ol>
+    <li>Open your LinkedIn Page as an admin, then <strong>Analytics &gt; Followers</strong>.</li>
+    <li>Next to <strong>All followers</strong>, pick how many recent followers to read (10 to 5,000).</li>
+    <li>Click the button. Keep the tab open and in front while it loads: Chrome slows down background tabs.</li>
+  </ol>
+
+  <h2>What your webhook receives</h2>
+  <p>One POST with a JSON array, newest follower first:</p>
+  <pre><code>[
+  {
+    "profile_url": "https://www.linkedin.com/in/someone/",
+    "following_date": "2026-10",
+    "name": "Someone",
+    "headline": "Security Engineer at Example"
+  }
+]</code></pre>
+  <p class="small" style="margin-top:8px"><code>following_date</code> is a month (YYYY-MM): LinkedIn does not show the exact day.</p>
+
+  <h2>Optional: show counts on LinkedIn</h2>
+  <p>If your webhook answers with JSON such as <code>{"new": 37, "known": 163}</code>, for example after checking which followers you already have, those counts appear next to the button.</p>
+
+  <p class="small" style="margin-top:32px">Not affiliated with or endorsed by LinkedIn. Data goes only to your computer (CSV) or to the webhook you set here. Use it in line with LinkedIn's terms.</p>
+</main>
+<script src="options.js"></script>
+</body>
+</html>
